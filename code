@@ -1,0 +1,45 @@
+import pandas as pd
+import numpy as np
+import openpyxl
+import os
+
+#source document path
+path = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\BEx_RouteSmart_pt_Facet_Join.xlsx"
+
+#reading df
+dataframe = pd.read_excel(path)
+print('Dataframe columns: {}'.format(dataframe.columns))
+
+
+dataframe['House'] = dataframe['AddNum'].astype(str).map(lambda x:x.split('.')[0])
+dataframe['Full_name'] = dataframe['Last_Name']+', '+dataframe['First_Name']
+dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
+df = dataframe[['House','Full_add','Full_name', 'Side','FACET_NAME']]
+
+#sorting values 1)facet 2)last_name
+df.sort_values(by=['FACET_NAME','Full_name']).head(2)
+
+#creating files from facet unique values
+split_values = df['FACET_NAME'].unique()
+print('Unique Values: {}'.format(split_values))
+
+for value in split_values:
+    df1 = df[df['FACET_NAME']==value]
+    facet_container = "P:\\Houston Gas Drafting\\GIS\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\facet_container\\"
+    output_file_name = facet_container+'FACET_'+str(value)+'.xlsx'
+    df1.to_excel(output_file_name,index='False')
+
+
+os.chdir(r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\facet_container")
+os.getcwd()
+os.listdir()
+
+#separating sheets in multiple sheets in groups of 20
+facet_list = os.listdir()
+
+for facet in facet_list:
+    sheet_df = pd.read_excel(facet)
+    writer = pd.ExcelWriter(facet)
+    for key, grp in sheet_df.groupby(sheet_df.index // 20):
+        grp.to_excel(writer, f'sheet_{key}', header=False)
+        writer.save()

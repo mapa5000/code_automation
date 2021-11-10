@@ -17,7 +17,7 @@ dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
 df = dataframe[['House','Full_add','Full_name', 'Side','FACET_NAME']]
 
 #sorting values 1)facet 2)last_name
-df.sort_values(by=['FACET_NAME','Full_name']).head(2)
+df.sort_values(by=['FACET_NAME',])
 
 #creating files from facet unique values
 split_values = df['FACET_NAME'].unique()
@@ -43,3 +43,154 @@ for facet in facet_list:
     for key, grp in sheet_df.groupby(sheet_df.index // 20):
         grp.to_excel(writer, f'sheet_{key}', header=False)
         writer.save()
+
+#iterating on excel facet list
+
+list_wb = os.listdir()
+for wb in list_wb:
+    wb_obj = openpyxl.load_workbook(wb)
+    #sheet_obj = wb_obj.active
+    for sheet in wb_obj.worksheets:
+        
+        
+        #creating last_name values
+        customer_fullname_row_1 =  sheet.cell(row = 1,   column = 5)
+        customer_fullname_row_2 =  sheet.cell(row = 2,   column = 5)
+        customer_fullname_row_3 =  sheet.cell(row = 3,   column = 5)
+        customer_fullname_row_4 =  sheet.cell(row = 4,   column = 5)
+        customer_fullname_row_5 =  sheet.cell(row = 5,   column = 5)
+        customer_fullname_row_6 =  sheet.cell(row = 6,   column = 5)
+        customer_fullname_row_7 =  sheet.cell(row = 7,   column = 5)
+        customer_fullname_row_8 =  sheet.cell(row = 8,   column = 5)
+        customer_fullname_row_9 =  sheet.cell(row = 9,   column = 5)
+        customer_fullname_row_10 = sheet.cell(row = 10, column = 5)
+        customer_fullname_row_11 = sheet.cell(row = 11, column = 5)
+        customer_fullname_row_12 = sheet.cell(row = 12, column = 5)
+        customer_fullname_row_13 = sheet.cell(row = 13, column = 5)
+        customer_fullname_row_14 = sheet.cell(row = 14, column = 5)
+        customer_fullname_row_15 = sheet.cell(row = 15, column = 5)
+        customer_fullname_row_16 = sheet.cell(row = 16, column = 5)
+        customer_fullname_row_17 = sheet.cell(row = 17, column = 5)
+        customer_fullname_row_18 = sheet.cell(row = 18, column = 5)
+        customer_fullname_row_19 = sheet.cell(row = 19, column = 5)
+        customer_fullname_row_20 = sheet.cell(row = 20, column = 5)
+
+        #creating street values
+        street_name_row_1 =  sheet.cell(row = 1,  column = 4)
+        street_name_row_2 =  sheet.cell(row = 2,  column = 4)
+        street_name_row_3 =  sheet.cell(row = 3,  column = 4)
+        street_name_row_4 =  sheet.cell(row = 4,  column = 4)
+        street_name_row_5 =  sheet.cell(row = 5,  column = 4)
+        street_name_row_6 =  sheet.cell(row = 6,  column = 4)
+        street_name_row_7 =  sheet.cell(row = 7,  column = 4)
+        street_name_row_8 =  sheet.cell(row = 8,  column = 4)
+        street_name_row_9 =  sheet.cell(row = 9,  column = 4)
+        street_name_row_10 = sheet.cell(row = 10, column = 4)
+        street_name_row_11 = sheet.cell(row = 11, column = 4)
+        street_name_row_12 = sheet.cell(row = 12, column = 4)
+        street_name_row_13 = sheet.cell(row = 13, column = 4)
+        street_name_row_14 = sheet.cell(row = 14, column = 4)
+        street_name_row_15 = sheet.cell(row = 15, column = 4)
+        street_name_row_16 = sheet.cell(row = 16, column = 4)
+        street_name_row_17 = sheet.cell(row = 17, column = 4)
+        street_name_row_18 = sheet.cell(row = 18, column = 4)
+        street_name_row_19 = sheet.cell(row = 19, column = 4)
+        street_name_row_20 = sheet.cell(row = 20, column = 4)
+    
+        #creating street numbers
+        street_number_row_1 =  sheet.cell(row = 1,  column = 3)
+        street_number_row_2 =  sheet.cell(row = 2,  column = 3)
+        street_number_row_3 =  sheet.cell(row = 3,  column = 3)
+        street_number_row_4 =  sheet.cell(row = 4,  column = 3)
+        street_number_row_5 =  sheet.cell(row = 5,  column = 3)
+        street_number_row_6 =  sheet.cell(row = 6,  column = 3)
+        street_number_row_7 =  sheet.cell(row = 7,  column = 3)
+        street_number_row_8 =  sheet.cell(row = 8,  column = 3)
+        street_number_row_9 =  sheet.cell(row = 9,  column = 3)
+        street_number_row_10 = sheet.cell(row = 10, column = 3)
+        street_number_row_11 = sheet.cell(row = 11, column = 3)
+        street_number_row_12 = sheet.cell(row = 12, column = 3)
+        street_number_row_13 = sheet.cell(row = 13, column = 3)
+        street_number_row_14 = sheet.cell(row = 14, column = 3)
+        street_number_row_15 = sheet.cell(row = 15, column = 3)
+        street_number_row_16 = sheet.cell(row = 16, column = 3)
+        street_number_row_17 = sheet.cell(row = 17, column = 3)
+        street_number_row_18 = sheet.cell(row = 18, column = 3)
+        street_number_row_19 = sheet.cell(row = 19, column = 3)
+        street_number_row_20 = sheet.cell(row = 20, column = 3)
+
+        facet_cod_row_1 = sheet_obj.cell(row = 1, column = 9)
+        
+        template = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\template.xlsx"
+        wb_template = openpyxl.load_workbook(template)
+        sheet_template = wb_template.active
+        
+        #populating last_name values
+        sheet_template['B5'].value  = customer_fullname_row_1.value
+        sheet_template['B6'].value  = customer_fullname_row_2.value
+        sheet_template['B7'].value  = customer_fullname_row_3.value
+        sheet_template['B8'].value  = customer_fullname_row_4.value
+        sheet_template['B9'].value  = customer_fullname_row_5.value
+        sheet_template['B10'].value = customer_fullname_row_6.value
+        sheet_template['B11'].value = customer_fullname_row_7.value
+        sheet_template['B12'].value = customer_fullname_row_8.value
+        sheet_template['B13'].value = customer_fullname_row_9.value
+        sheet_template['B14'].value = customer_fullname_row_10.value
+        sheet_template['B15'].value = customer_fullname_row_11.value
+        sheet_template['B16'].value = customer_fullname_row_12.value
+        sheet_template['B17'].value = customer_fullname_row_13.value
+        sheet_template['B18'].value = customer_fullname_row_14.value
+        sheet_template['B19'].value = customer_fullname_row_15.value
+        sheet_template['B20'].value = customer_fullname_row_16.value
+        sheet_template['B21'].value = customer_fullname_row_17.value
+        sheet_template['B22'].value = customer_fullname_row_18.value
+        sheet_template['B23'].value = customer_fullname_row_19.value
+        sheet_template['B24'].value = customer_fullname_row_20.value
+
+        #populating street name values
+        sheet_template['D5'].value  = street_name_row_1.value
+        sheet_template['D6'].value  = street_name_row_2.value
+        sheet_template['D7'].value  = street_name_row_3.value
+        sheet_template['D8'].value  = street_name_row_4.value
+        sheet_template['D9'].value  = street_name_row_5.value
+        sheet_template['D10'].value = street_name_row_6.value
+        sheet_template['D11'].value = street_name_row_7.value
+        sheet_template['D12'].value = street_name_row_8.value
+        sheet_template['D13'].value = street_name_row_9.value
+        sheet_template['D14'].value = street_name_row_10.value
+        sheet_template['D15'].value = street_name_row_11.value
+        sheet_template['D16'].value = street_name_row_12.value
+        sheet_template['D17'].value = street_name_row_13.value
+        sheet_template['D18'].value = street_name_row_14.value
+        sheet_template['D19'].value = street_name_row_15.value
+        sheet_template['D20'].value = street_name_row_16.value
+        sheet_template['D21'].value = street_name_row_17.value
+        sheet_template['D22'].value = street_name_row_18.value
+        sheet_template['D23'].value = street_name_row_19.value
+        sheet_template['D24'].value = street_name_row_20.value
+
+        #populating street number values
+        sheet_template['C5'].value  = street_number_row_1.value
+        sheet_template['C6'].value  = street_number_row_2.value
+        sheet_template['C7'].value  = street_number_row_3.value
+        sheet_template['C8'].value  = street_number_row_4.value
+        sheet_template['C9'].value  = street_number_row_5.value
+        sheet_template['C10'].value = street_number_row_6.value
+        sheet_template['C11'].value = street_number_row_7.value
+        sheet_template['C12'].value = street_number_row_8.value
+        sheet_template['C13'].value = street_number_row_9.value
+        sheet_template['C14'].value = street_number_row_10.value
+        sheet_template['C15'].value = street_number_row_11.value
+        sheet_template['C16'].value = street_number_row_12.value
+        sheet_template['C17'].value = street_number_row_13.value
+        sheet_template['C18'].value = street_number_row_14.value
+        sheet_template['C19'].value = street_number_row_15.value
+        sheet_template['C20'].value = street_number_row_16.value
+        sheet_template['C21'].value = street_number_row_17.value
+        sheet_template['C22'].value = street_number_row_18.value
+        sheet_template['C23'].value = street_number_row_19.value
+        sheet_template['C24'].value = street_number_row_20.value
+        
+        
+        extension = '.xlsx'
+        wb_template.save("P:\\Houston Gas Drafting\\GIS\\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\final_container\\"+sheet.title+extension)

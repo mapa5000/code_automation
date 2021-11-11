@@ -6,7 +6,7 @@ import os
 
 
 #***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN DATA SOURCE
+#                                                    PLEASE, ADD YOUR OWN DATA PATH
 #***********************************************************************************************************************************************
 #source document path
 path = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\BEx_RouteSmart_pt_Facet_Join.xlsx"
@@ -42,7 +42,7 @@ for value in split_values:
 
 
 #***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN PATH
+#                                                    PLEASE, ADD YOUR OWN FOLDER PATH
 #***********************************************************************************************************************************************
 #this is a separate folder where I'm storing my excel files grouped by facet
 os.chdir(r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\facet_container")
@@ -155,6 +155,9 @@ for wb in list_wb:
         street_number_row_20 = sheet.cell(row = 20, column = 3)
 
         
+        #***********************************************************************************************************************************************
+        #                                                    PLEASE, ADD YOUR OWN TEMPLATE PATH
+        #***********************************************************************************************************************************************
         #template that needs to be populated by each sheet
         template = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\template.xlsx"
         wb_template = openpyxl.load_workbook(template)
@@ -227,5 +230,9 @@ for wb in list_wb:
         sheet_template['C23'].value = street_number_row_19.value
         sheet_template['C24'].value = street_number_row_20.value
         
+        
+        #***********************************************************************************************************************************************
+        #                                                    PLEASE, ADD YOUR OWN FOLDER PATH
+        #***********************************************************************************************************************************************
         #saving template
         wb_template.save("P:\\Houston Gas Drafting\\GIS\\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\final_container\\"+sheet.title+'.xlsx')

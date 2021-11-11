@@ -9,8 +9,7 @@ import os
 #                                                    PLEASE, ADD YOUR OWN DATA PATH
 #***********************************************************************************************************************************************
 #source document path
-path = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\BEx_RouteSmart_pt_Facet_Join.xlsx"
-
+path = "data.xlsx"
 
 
 
@@ -34,7 +33,10 @@ print('Unique Values: {}'.format(split_values))
 #creating excel files by FACET_NAME
 for value in split_values:
     df1 = df[df['FACET_NAME']==value]
-    facet_container = "P:\\Houston Gas Drafting\\GIS\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\facet_container\\"
+    #*******************************************************************************************************************************************
+    #                                                    PLEASE, ADD YOUR OWN FOLDER PATH - facet_container
+    #*******************************************************************************************************************************************
+    facet_container = "C:\\Users\\mapa_\\OneDrive\\Desktop\\EOR_automation\\facet_container\\"
     output_file_name = facet_container+'FACET_'+str(value)+'.xlsx'
     df1.to_excel(output_file_name,index='False')
 
@@ -42,10 +44,10 @@ for value in split_values:
 
 
 #***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN FOLDER PATH
+#                                                    PLEASE, ADD YOUR OWN FOLDER PATH - facet_container
 #***********************************************************************************************************************************************
 #this is a separate folder where I'm storing my excel files grouped by facet
-os.chdir(r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\facet_container")
+os.chdir(r"C:\Users\mapa_\OneDrive\Desktop\EOR_automation\facet_container")
 os.getcwd()
 os.listdir()
 
@@ -159,7 +161,7 @@ for wb in list_wb:
         #                                                    PLEASE, ADD YOUR OWN TEMPLATE PATH
         #***********************************************************************************************************************************************
         #template that needs to be populated by each sheet
-        template = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\template.xlsx"
+        template = r"C:\Users\mapa_\OneDrive\Desktop\EOR_automation\template.xlsx"
         wb_template = openpyxl.load_workbook(template)
         sheet_template = wb_template.active
         
@@ -232,7 +234,9 @@ for wb in list_wb:
         
         
         #***********************************************************************************************************************************************
-        #                                                    PLEASE, ADD YOUR OWN FOLDER PATH
+        #                                                    PLEASE, ADD YOUR OWN FOLDER PATH - inside of final container
         #***********************************************************************************************************************************************
         #saving template
-        wb_template.save("P:\\Houston Gas Drafting\\GIS\\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\final_container\\"+sheet.title+'.xlsx')
+        wb_template.save("C:\\Users\\mapa_\\OneDrive\\Desktop\\EOR_automation\\final_container\\"+sheet.title+'.xlsx')
+
+print('finished...so far !!!')

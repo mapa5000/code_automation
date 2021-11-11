@@ -3,8 +3,16 @@ import numpy as np
 import openpyxl
 import os
 
+
+
+#***********************************************************************************************************************************************
+#                                                    PLEASE, ADD YOUR OWN PATH
+#***********************************************************************************************************************************************
 #source document path
 path = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\BEx_RouteSmart_pt_Facet_Join.xlsx"
+
+
+
 
 #reading df
 dataframe = pd.read_excel(path)
@@ -23,6 +31,7 @@ df.sort_values(by=['FACET_NAME',])
 split_values = df['FACET_NAME'].unique()
 print('Unique Values: {}'.format(split_values))
 
+#creating excel files by FACET_NAME
 for value in split_values:
     df1 = df[df['FACET_NAME']==value]
     facet_container = "P:\\Houston Gas Drafting\\GIS\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\facet_container\\"
@@ -30,9 +39,18 @@ for value in split_values:
     df1.to_excel(output_file_name,index='False')
 
 
+
+
+#***********************************************************************************************************************************************
+#                                                    PLEASE, ADD YOUR OWN PATH
+#***********************************************************************************************************************************************
+#this is a separate folder where I'm storing my excel files grouped by facet
 os.chdir(r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\facet_container")
 os.getcwd()
 os.listdir()
+
+
+
 
 #separating sheets in multiple sheets in groups of 20
 facet_list = os.listdir()
@@ -44,14 +62,31 @@ for facet in facet_list:
         grp.to_excel(writer, f'sheet_{key}', header=False)
         writer.save()
 
-#iterating on excel facet list
 
+
+
+
+
+# ***********************************************************************************************
+"""
+
+THIS IS THE SECTION WHERE I AM STUCK
+I'M TRYING TO ITERATE IN A LIST OF WORKBOOKS AND THEN, ITERATING IN A LIST OF WORKSHEETS
+SO FAR, IT'S JUST ITERATING IN THE FIRST WORKBOOK BUT NOT IN THE REST OF THEM
+
+"""
+# ***********************************************************************************************
+
+
+
+# iterating on excel facet list
 list_wb = os.listdir()
 for wb in list_wb:
     wb_obj = openpyxl.load_workbook(wb)
-    #sheet_obj = wb_obj.active
+    
+    # iterating between worksheets in each workbook
     for sheet in wb_obj.worksheets:
-        
+    
         
         #creating last_name values
         customer_fullname_row_1 =  sheet.cell(row = 1,   column = 5)
@@ -119,12 +154,13 @@ for wb in list_wb:
         street_number_row_19 = sheet.cell(row = 19, column = 3)
         street_number_row_20 = sheet.cell(row = 20, column = 3)
 
-        facet_cod_row_1 = sheet_obj.cell(row = 1, column = 9)
         
+        #template that needs to be populated by each sheet
         template = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\template.xlsx"
         wb_template = openpyxl.load_workbook(template)
         sheet_template = wb_template.active
         
+
         #populating last_name values
         sheet_template['B5'].value  = customer_fullname_row_1.value
         sheet_template['B6'].value  = customer_fullname_row_2.value
@@ -191,6 +227,5 @@ for wb in list_wb:
         sheet_template['C23'].value = street_number_row_19.value
         sheet_template['C24'].value = street_number_row_20.value
         
-        
-        extension = '.xlsx'
-        wb_template.save("P:\\Houston Gas Drafting\\GIS\\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\final_container\\"+sheet.title+extension)
+        #saving template
+        wb_template.save("P:\\Houston Gas Drafting\\GIS\\Corrections\\Submitted\\2021\\Marco Portillo\\pending EOP Data Exploration\\test\\final_container\\"+sheet.title+'.xlsx')

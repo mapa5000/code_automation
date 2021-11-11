@@ -6,7 +6,7 @@ import os
 
 
 #***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN PATH
+#                                                    PLEASE, ADD YOUR OWN DATA SOURCE
 #***********************************************************************************************************************************************
 #source document path
 path = r"P:\Houston Gas Drafting\GIS\Corrections\Submitted\2021\Marco Portillo\pending EOP Data Exploration\test\BEx_RouteSmart_pt_Facet_Join.xlsx"

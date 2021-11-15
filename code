@@ -1,242 +1,298 @@
-import pandas as pd
-import numpy as np
-import openpyxl
+import pandas as pd 
+import numpy as np 
+import openpyxl 
 import os
+import datetime as dt
 
+start_time = dt.datetime.now()
+print ("Starting")
 
+try:
+    os.mkdir('facet_container')
+    os.mkdir('valve_off')
+    os.mkdir('re_light')
+except:
+    pass
+finally:
+    print('...folders already created...')
 
-#***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN DATA PATH
-#***********************************************************************************************************************************************
-#source document path
+print('...extracting data...')
 path = "data.xlsx"
 
-
-
 #reading df
+print('...creating dataframe...')
 dataframe = pd.read_excel(path)
-print('Dataframe columns: {}'.format(dataframe.columns))
 
+
+
+#######################################################################################################
+#                                                                                                     #
+#                                                                                                     #
+#                       PLEASE, VERIFY FIELD NAMES BEFORE RUNNING SCRIPT                              #
+#                                                                                                     #
+#                                                                                                     #
+#######################################################################################################
 
 dataframe['House'] = dataframe['AddNum'].astype(str).map(lambda x:x.split('.')[0])
+dataframe['Mtr_Ser_No'] = dataframe['Mtr_Ser_No'].astype(str).map(lambda x:x.split('.')[0])
 dataframe['Full_name'] = dataframe['Last_Name']+', '+dataframe['First_Name']
 dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
-df = dataframe[['House','Full_add','Full_name', 'Side','FACET_NAME']]
+df = dataframe[['House','Full_add','Full_name', 'Side','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']]
 
 #sorting values 1)facet 2)last_name
-df.sort_values(by=['FACET_NAME',])
+df.sort_values(by=['FACET_NAME'])
 
+print('...creating unique values...')
 #creating files from facet unique values
 split_values = df['FACET_NAME'].unique()
-print('Unique Values: {}'.format(split_values))
+#print('Unique Values: {}'.format(split_values))
 
-#creating excel files by FACET_NAME
-for value in split_values:
-    df1 = df[df['FACET_NAME']==value]
-    #*******************************************************************************************************************************************
-    #                                                    PLEASE, ADD YOUR OWN FOLDER PATH - facet_container
-    #*******************************************************************************************************************************************
-    facet_container = "C:\\Users\\mapa_\\OneDrive\\Desktop\\EOR_automation\\facet_container\\"
-    output_file_name = facet_container+'FACET_'+str(value)+'.xlsx'
-    df1.to_excel(output_file_name,index='False')
+dfs = []
+values=[]
+for value in split_values: 
+    df1 = df[df['FACET_NAME']==value] 
+    dfs.append(df1)
+    values.append(value)
 
+print('...creating lists...')
+sheets = []
+sheetmax = 20
+book = 0;
 
+for  dfi in dfs:
+    i = 0;
+    sh = 1
+    df_empty_list=[]
+    #print('Book: ' + str(values[book]))
 
+    df_empty = pd.DataFrame({})
+    for idx in dfi.index:
+        i = i + 1
+        entry = df.loc[[idx]]
+        
+        df_empty=df_empty.append([entry] )
+        if ((i % sheetmax)==0 or (i == len(dfi))):
+            sh= sh + 1   
+            df_empty_list.append(df_empty)
+            df_empty = pd.DataFrame({})
 
-#***********************************************************************************************************************************************
-#                                                    PLEASE, ADD YOUR OWN FOLDER PATH - facet_container
-#***********************************************************************************************************************************************
-#this is a separate folder where I'm storing my excel files grouped by facet
-os.chdir(r"C:\Users\mapa_\OneDrive\Desktop\EOR_automation\facet_container")
+    writer = pd.ExcelWriter(r'facet_container/FACET_'+str(values[book])+'.xlsx', engine='xlsxwriter')   
+    sh = 1   
+
+    for dfj in df_empty_list:
+        dfj.to_excel(writer, sheet_name='Sheet'+str(sh))
+        sh = sh + 1
+
+    writer.save()
+    book = book + 1 
+
+os.chdir(r"facet_container/")
 os.getcwd()
 os.listdir()
 
-
-
-
-#separating sheets in multiple sheets in groups of 20
-facet_list = os.listdir()
-
-for facet in facet_list:
-    sheet_df = pd.read_excel(facet)
-    writer = pd.ExcelWriter(facet)
-    for key, grp in sheet_df.groupby(sheet_df.index // 20):
-        grp.to_excel(writer, f'sheet_{key}', header=False)
-        writer.save()
-
-
-
-
-
-
-# ***********************************************************************************************
-"""
-
-THIS IS THE SECTION WHERE I AM STUCK
-I'M TRYING TO ITERATE IN A LIST OF WORKBOOKS AND THEN, ITERATING IN A LIST OF WORKSHEETS
-SO FAR, IT'S JUST ITERATING IN THE FIRST WORKBOOK BUT NOT IN THE REST OF THEM
-
-"""
-# ***********************************************************************************************
-
-
-
 # iterating on excel facet list
 list_wb = os.listdir()
+# iterating on excel facet list
+list_wb = os.listdir()
+
+
+
+##############################################################################################################################################################
+#                                                                                                                                                            #
+#                                                                                                                                                            #
+#                                                                   VALVE OFF DATA CREATION                                                                  #
+#                                                                                                                                                            #
+#                                                                                                                                                            #
+##############################################################################################################################################################
+
+print('...valve off data creation...')
+print('...creating workbooks and worksheets...')
+
+re_light_template = r"../re_light_template.xlsx"
+wb_re_light_template = openpyxl.load_workbook(re_light_template)
+
 for wb in list_wb:
+    if ".xls" in wb:
+        wb_obj = openpyxl.load_workbook(wb)
+        sheetIdx = 0
+        newPath = r"../valve_off/" + wb + ".xlsx"
+        wb_re_light_template.save(newPath)
+        wb_new = openpyxl.load_workbook(newPath)
+        source = wb_new.active
+
+
+        # iterating between worksheets in each workbook
+        for sheet in wb_obj.worksheets:
+            sheetIdx = sheetIdx  + 1
+
+            customer_fullname_row = []
+            street_name_row = []
+            street_number_row = []
+            side_row = []
+            Mtr_Ser_No_row = []
+            ERT_Ser_No_row = []
+
+            
+            for irow in range(20):
+                #print('irow :' + str(irow))
+                customer_fullname_row.append( sheet.cell(row = irow + 2,   column = 4))
+                street_name_row.append(  sheet.cell(row = irow + 2,  column = 3))
+                street_number_row.append(sheet.cell(row = irow + 2,  column = 2))
+                side_row.append(sheet.cell(row = irow + 2,  column = 5))
+                Mtr_Ser_No_row.append(sheet.cell(row = irow + 2,  column = 8))
+                ERT_Ser_No_row.append(sheet.cell(row = irow + 2,  column = 9))
+                
+
+            if sheetIdx == 1:
+                sheet_re_light_template  = source
+            else:
+                sheet_re_light_template = wb_new.copy_worksheet(source)
+                sheet_re_light_template.title = "Sheet" + str(sheetIdx)    
+                
+            for irow in range(20):            
+                sheet_re_light_template['B' + str(irow + 5 )].value  = customer_fullname_row[irow].value
+                sheet_re_light_template['D' + str(irow + 5 )].value  = street_name_row[irow].value
+                sheet_re_light_template['C' + str(irow + 5 )].value  = street_number_row[irow].value
+                sheet_re_light_template['F' + str(irow + 5 )].value  = side_row[irow].value
+                sheet_re_light_template['G' + str(irow + 5 )].value  = Mtr_Ser_No_row[irow].value
+                sheet_re_light_template['H' + str(irow + 5 )].value  = ERT_Ser_No_row[irow].value
+            sheet_re_light_template['E1']  = sheet['F2'].value
+            sheet_re_light_template['I1']  = sheet['G2'].value
+
+
+        wb_new.save(newPath)
+
+
+
+os.chdir(r"../valve_off/")
+print('...creating page index...')
+print('...renaming workbooks...') 
+
+for wb in os.listdir():
+    
     wb_obj = openpyxl.load_workbook(wb)
-    
-    # iterating between worksheets in each workbook
+    wb_obj.active
+    wb_obj.properties.tagname
     for sheet in wb_obj.worksheets:
+        
+        sheet_number = sheet.title[5:]
+        total_number = len(wb_obj.worksheets)
+        numeration = '{} of {}'.format(sheet_number,total_number)
+        sheet['N1'].value = numeration
+        wb_obj.save(wb)
+
+   
+    new_name = os.path.split(wb)[1][:-5]
+    os.rename(wb,new_name)
+
+
+
+
+##############################################################################################################################################################
+#                                                                                                                                                            #
+#                                                                                                                                                            #
+#                                                                    RE-LIGHT DATA CREATION                                                                  #
+#                                                                                                                                                            #
+#                                                                                                                                                            #
+##############################################################################################################################################################
+
+
+
+print('...re-light data creation...')
+print('...creating workbooks and worksheets...')
+
+re_light_template = r"../re_light_template.xlsx"
+wb_re_light_template = openpyxl.load_workbook(re_light_template)
+
+
+os.chdir(r"../facet_container/")
+
+for wb in list_wb:
+    if ".xls" in wb:
+        wb_obj = openpyxl.load_workbook(wb)
+        sheetIdx = 0
+        newPath = r"../re_light/" + wb + ".xlsx"
+        wb_re_light_template.save(newPath)
+        wb_new = openpyxl.load_workbook(newPath)
+        source = wb_new.active
+
+
+        # iterating between worksheets in each workbook
+        for sheet in wb_obj.worksheets:
+            sheetIdx = sheetIdx  + 1
+
+            customer_fullname_row = []
+            street_name_row = []
+            street_number_row = []
+            side_row = []
+            Mtr_Ser_No_row = []
+            ERT_Ser_No_row = []
+
+            
+            for irow in range(20):
+                #print('irow :' + str(irow))
+                customer_fullname_row.append( sheet.cell(row = irow + 2,   column = 4))
+                street_name_row.append(  sheet.cell(row = irow + 2,  column = 3))
+                street_number_row.append(sheet.cell(row = irow + 2,  column = 2))
+                side_row.append(sheet.cell(row = irow + 2,  column = 5))
+                Mtr_Ser_No_row.append(sheet.cell(row = irow + 2,  column = 8))
+                ERT_Ser_No_row.append(sheet.cell(row = irow + 2,  column = 9))
+                
+
+            if sheetIdx == 1:
+                sheet_re_light_template  = source
+            else:
+                sheet_re_light_template = wb_new.copy_worksheet(source)
+                sheet_re_light_template.title = "Sheet" + str(sheetIdx)    
+                
+            for irow in range(20):            
+                sheet_re_light_template['B' + str(irow + 5 )].value  = customer_fullname_row[irow].value
+                sheet_re_light_template['D' + str(irow + 5 )].value  = street_name_row[irow].value
+                sheet_re_light_template['C' + str(irow + 5 )].value  = street_number_row[irow].value
+                sheet_re_light_template['F' + str(irow + 5 )].value  = side_row[irow].value
+                sheet_re_light_template['G' + str(irow + 5 )].value  = Mtr_Ser_No_row[irow].value
+                sheet_re_light_template['H' + str(irow + 5 )].value  = ERT_Ser_No_row[irow].value
+            sheet_re_light_template['E1']  = sheet['F2'].value
+            sheet_re_light_template['I1']  = sheet['G2'].value
+
+
+        wb_new.save(newPath)
+
+
+
+os.chdir(r"../re_light/")
+print('...creating page index...')
+print('...renaming workbooks...') 
+
+for wb in os.listdir():
     
+    wb_obj = openpyxl.load_workbook(wb)
+    wb_obj.active
+    wb_obj.properties.tagname
+    for sheet in wb_obj.worksheets:
         
-        #creating last_name values
-        customer_fullname_row_1 =  sheet.cell(row = 1,   column = 5)
-        customer_fullname_row_2 =  sheet.cell(row = 2,   column = 5)
-        customer_fullname_row_3 =  sheet.cell(row = 3,   column = 5)
-        customer_fullname_row_4 =  sheet.cell(row = 4,   column = 5)
-        customer_fullname_row_5 =  sheet.cell(row = 5,   column = 5)
-        customer_fullname_row_6 =  sheet.cell(row = 6,   column = 5)
-        customer_fullname_row_7 =  sheet.cell(row = 7,   column = 5)
-        customer_fullname_row_8 =  sheet.cell(row = 8,   column = 5)
-        customer_fullname_row_9 =  sheet.cell(row = 9,   column = 5)
-        customer_fullname_row_10 = sheet.cell(row = 10, column = 5)
-        customer_fullname_row_11 = sheet.cell(row = 11, column = 5)
-        customer_fullname_row_12 = sheet.cell(row = 12, column = 5)
-        customer_fullname_row_13 = sheet.cell(row = 13, column = 5)
-        customer_fullname_row_14 = sheet.cell(row = 14, column = 5)
-        customer_fullname_row_15 = sheet.cell(row = 15, column = 5)
-        customer_fullname_row_16 = sheet.cell(row = 16, column = 5)
-        customer_fullname_row_17 = sheet.cell(row = 17, column = 5)
-        customer_fullname_row_18 = sheet.cell(row = 18, column = 5)
-        customer_fullname_row_19 = sheet.cell(row = 19, column = 5)
-        customer_fullname_row_20 = sheet.cell(row = 20, column = 5)
+        sheet_number = sheet.title[5:]
+        total_number = len(wb_obj.worksheets)
+        numeration = '{} of {}'.format(sheet_number,total_number)
+        sheet['N1'].value = numeration
+        wb_obj.save(wb)
 
-        #creating street values
-        street_name_row_1 =  sheet.cell(row = 1,  column = 4)
-        street_name_row_2 =  sheet.cell(row = 2,  column = 4)
-        street_name_row_3 =  sheet.cell(row = 3,  column = 4)
-        street_name_row_4 =  sheet.cell(row = 4,  column = 4)
-        street_name_row_5 =  sheet.cell(row = 5,  column = 4)
-        street_name_row_6 =  sheet.cell(row = 6,  column = 4)
-        street_name_row_7 =  sheet.cell(row = 7,  column = 4)
-        street_name_row_8 =  sheet.cell(row = 8,  column = 4)
-        street_name_row_9 =  sheet.cell(row = 9,  column = 4)
-        street_name_row_10 = sheet.cell(row = 10, column = 4)
-        street_name_row_11 = sheet.cell(row = 11, column = 4)
-        street_name_row_12 = sheet.cell(row = 12, column = 4)
-        street_name_row_13 = sheet.cell(row = 13, column = 4)
-        street_name_row_14 = sheet.cell(row = 14, column = 4)
-        street_name_row_15 = sheet.cell(row = 15, column = 4)
-        street_name_row_16 = sheet.cell(row = 16, column = 4)
-        street_name_row_17 = sheet.cell(row = 17, column = 4)
-        street_name_row_18 = sheet.cell(row = 18, column = 4)
-        street_name_row_19 = sheet.cell(row = 19, column = 4)
-        street_name_row_20 = sheet.cell(row = 20, column = 4)
-    
-        #creating street numbers
-        street_number_row_1 =  sheet.cell(row = 1,  column = 3)
-        street_number_row_2 =  sheet.cell(row = 2,  column = 3)
-        street_number_row_3 =  sheet.cell(row = 3,  column = 3)
-        street_number_row_4 =  sheet.cell(row = 4,  column = 3)
-        street_number_row_5 =  sheet.cell(row = 5,  column = 3)
-        street_number_row_6 =  sheet.cell(row = 6,  column = 3)
-        street_number_row_7 =  sheet.cell(row = 7,  column = 3)
-        street_number_row_8 =  sheet.cell(row = 8,  column = 3)
-        street_number_row_9 =  sheet.cell(row = 9,  column = 3)
-        street_number_row_10 = sheet.cell(row = 10, column = 3)
-        street_number_row_11 = sheet.cell(row = 11, column = 3)
-        street_number_row_12 = sheet.cell(row = 12, column = 3)
-        street_number_row_13 = sheet.cell(row = 13, column = 3)
-        street_number_row_14 = sheet.cell(row = 14, column = 3)
-        street_number_row_15 = sheet.cell(row = 15, column = 3)
-        street_number_row_16 = sheet.cell(row = 16, column = 3)
-        street_number_row_17 = sheet.cell(row = 17, column = 3)
-        street_number_row_18 = sheet.cell(row = 18, column = 3)
-        street_number_row_19 = sheet.cell(row = 19, column = 3)
-        street_number_row_20 = sheet.cell(row = 20, column = 3)
+   
+    new_name = os.path.split(wb)[1][:-5]
+    os.rename(wb,new_name)
 
-        
-        #***********************************************************************************************************************************************
-        #                                                    PLEASE, ADD YOUR OWN TEMPLATE PATH
-        #***********************************************************************************************************************************************
-        #template that needs to be populated by each sheet
-        template = r"C:\Users\mapa_\OneDrive\Desktop\EOR_automation\template.xlsx"
-        wb_template = openpyxl.load_workbook(template)
-        sheet_template = wb_template.active
-        
 
-        #populating last_name values
-        sheet_template['B5'].value  = customer_fullname_row_1.value
-        sheet_template['B6'].value  = customer_fullname_row_2.value
-        sheet_template['B7'].value  = customer_fullname_row_3.value
-        sheet_template['B8'].value  = customer_fullname_row_4.value
-        sheet_template['B9'].value  = customer_fullname_row_5.value
-        sheet_template['B10'].value = customer_fullname_row_6.value
-        sheet_template['B11'].value = customer_fullname_row_7.value
-        sheet_template['B12'].value = customer_fullname_row_8.value
-        sheet_template['B13'].value = customer_fullname_row_9.value
-        sheet_template['B14'].value = customer_fullname_row_10.value
-        sheet_template['B15'].value = customer_fullname_row_11.value
-        sheet_template['B16'].value = customer_fullname_row_12.value
-        sheet_template['B17'].value = customer_fullname_row_13.value
-        sheet_template['B18'].value = customer_fullname_row_14.value
-        sheet_template['B19'].value = customer_fullname_row_15.value
-        sheet_template['B20'].value = customer_fullname_row_16.value
-        sheet_template['B21'].value = customer_fullname_row_17.value
-        sheet_template['B22'].value = customer_fullname_row_18.value
-        sheet_template['B23'].value = customer_fullname_row_19.value
-        sheet_template['B24'].value = customer_fullname_row_20.value
 
-        #populating street name values
-        sheet_template['D5'].value  = street_name_row_1.value
-        sheet_template['D6'].value  = street_name_row_2.value
-        sheet_template['D7'].value  = street_name_row_3.value
-        sheet_template['D8'].value  = street_name_row_4.value
-        sheet_template['D9'].value  = street_name_row_5.value
-        sheet_template['D10'].value = street_name_row_6.value
-        sheet_template['D11'].value = street_name_row_7.value
-        sheet_template['D12'].value = street_name_row_8.value
-        sheet_template['D13'].value = street_name_row_9.value
-        sheet_template['D14'].value = street_name_row_10.value
-        sheet_template['D15'].value = street_name_row_11.value
-        sheet_template['D16'].value = street_name_row_12.value
-        sheet_template['D17'].value = street_name_row_13.value
-        sheet_template['D18'].value = street_name_row_14.value
-        sheet_template['D19'].value = street_name_row_15.value
-        sheet_template['D20'].value = street_name_row_16.value
-        sheet_template['D21'].value = street_name_row_17.value
-        sheet_template['D22'].value = street_name_row_18.value
-        sheet_template['D23'].value = street_name_row_19.value
-        sheet_template['D24'].value = street_name_row_20.value
+#############################################################################
+################     FINISHING SCRIPT    ####################################
+#############################################################################
 
-        #populating street number values
-        sheet_template['C5'].value  = street_number_row_1.value
-        sheet_template['C6'].value  = street_number_row_2.value
-        sheet_template['C7'].value  = street_number_row_3.value
-        sheet_template['C8'].value  = street_number_row_4.value
-        sheet_template['C9'].value  = street_number_row_5.value
-        sheet_template['C10'].value = street_number_row_6.value
-        sheet_template['C11'].value = street_number_row_7.value
-        sheet_template['C12'].value = street_number_row_8.value
-        sheet_template['C13'].value = street_number_row_9.value
-        sheet_template['C14'].value = street_number_row_10.value
-        sheet_template['C15'].value = street_number_row_11.value
-        sheet_template['C16'].value = street_number_row_12.value
-        sheet_template['C17'].value = street_number_row_13.value
-        sheet_template['C18'].value = street_number_row_14.value
-        sheet_template['C19'].value = street_number_row_15.value
-        sheet_template['C20'].value = street_number_row_16.value
-        sheet_template['C21'].value = street_number_row_17.value
-        sheet_template['C22'].value = street_number_row_18.value
-        sheet_template['C23'].value = street_number_row_19.value
-        sheet_template['C24'].value = street_number_row_20.value
-        
-        
-        #***********************************************************************************************************************************************
-        #                                                    PLEASE, ADD YOUR OWN FOLDER PATH - inside of final container
-        #***********************************************************************************************************************************************
-        #saving template
-        wb_template.save("C:\\Users\\mapa_\\OneDrive\\Desktop\\EOR_automation\\final_container\\"+sheet.title+'.xlsx')
+print('...')
+print('...')
+print('...')
+print('script finished')
 
-print('finished...so far !!!')
+end_time = dt.datetime.now()
+execution_time = end_time - start_time
+print('\n')
+print(f"(Executed in: {execution_time} sec)")

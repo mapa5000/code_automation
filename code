@@ -1,11 +1,36 @@
+# -*- coding: utf-8 -*-
+# ---------------------------------------------------------------------------
+# EOR_automation.py
+# Created on: 2021-11-14
+# Company: XXXXXXXXXXXXX
+# Description: Excel Automation
+# Created by: MPortillo 
+# ---------------------------------------------------------------------------
+
+
 import pandas as pd 
 import numpy as np 
 import openpyxl 
 import os
 import datetime as dt
+import shutil
+import time
 
 start_time = dt.datetime.now()
 print ("Starting")
+
+os.chdir(r'../test/')
+ruta = os.getcwd()
+
+for dir in os.listdir():
+    if os.path.isdir(dir):
+        shutil.rmtree(dir)
+        print("...{} folder removed from directory succesfully".format(dir))
+
+else:
+        print("...no more files need to be removed from directory")
+time.sleep(5)
+
 
 try:
     os.mkdir('facet_container')

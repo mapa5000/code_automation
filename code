@@ -14,7 +14,6 @@ import openpyxl
 import os
 import datetime as dt
 import shutil
-import time
 
 start_time = dt.datetime.now()
 print ("Starting")
@@ -29,7 +28,6 @@ for dir in os.listdir():
 
 else:
         print("...no more files need to be removed from directory")
-time.sleep(5)
 
 
 try:

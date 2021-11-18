@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # EOR_automation.py
 # Created on: 2021-11-14
-# Company: XXXXXXXXXXXXX
+# Company: CenterPoint Energy
 # Description: Excel Automation
 # Created by: MPortillo 
 # ---------------------------------------------------------------------------
@@ -14,6 +14,7 @@ import openpyxl
 import os
 import datetime as dt
 import shutil
+
 
 start_time = dt.datetime.now()
 print ("Starting")
@@ -28,6 +29,7 @@ for dir in os.listdir():
 
 else:
         print("...no more files need to be removed from directory")
+
 
 
 try:
@@ -57,6 +59,7 @@ dataframe = pd.read_excel(path)
 #######################################################################################################
 
 dataframe['House'] = dataframe['AddNum'].astype(str).map(lambda x:x.split('.')[0])
+
 dataframe['Mtr_Ser_No'] = dataframe['Mtr_Ser_No'].astype(str).map(lambda x:x.split('.')[0])
 dataframe['Full_name'] = dataframe['Last_Name']+', '+dataframe['First_Name']
 dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
@@ -131,7 +134,7 @@ list_wb = os.listdir()
 print('...valve off data creation...')
 print('...creating workbooks and worksheets...')
 
-re_light_template = r"../re_light_template.xlsx"
+re_light_template = r"../valve_off_template.xlsx"
 wb_re_light_template = openpyxl.load_workbook(re_light_template)
 
 for wb in list_wb:

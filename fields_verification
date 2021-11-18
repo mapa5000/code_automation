@@ -1,0 +1,38 @@
+import pandas as pd
+import os
+
+os.chdir(r"../fields_verification/")
+print('Folder: ' + os.getcwd())
+
+
+missing_fields = []
+list_1 = ['Side','AddNum','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']
+
+
+
+
+
+for file in os.listdir():
+    if ".xlsx" in file:
+        path = r"../fields_verification/" + file
+        df = pd.read_excel(path)
+        list_data = df.columns.to_list()
+        for item in list_1:
+            if item not in list_data:
+                missing_fields.append(item)
+
+print('\n')
+print('***************************************')
+print('***************************************')
+print('********  FIELDS VERIFICATION  ********')
+print('***************************************')
+print('***************************************')
+
+print('\n')
+print('Number of missing fields: ' + str(len(missing_fields)))
+
+print('List of Missing Fields: ')
+print(missing_fields)
+print('\n')
+print('\n')
+print('---script finished---')

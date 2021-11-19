@@ -15,16 +15,30 @@ list_1 = ['Loc','AddNum','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No','StType',
 
 
 for file in os.listdir():
-    if ".xlsx" in file:
-        path = r"../fields_verification/" + file
+    if "data.xlsx" in file:
+        path = directory + '/' + file
         df = pd.read_excel(path)
         list_data = df.columns.to_list()
         for item in list_1:
             if item not in list_data:
                 missing_fields.append(item)
 
-    elif ".xls" in file:
-        path = r"../fields_verification/" + file
+    elif "data.xls" in file:
+        path = directory + '/' + file
+        df = pd.read_excel(path)
+        list_data = df.columns.to_list()
+        for item in list_1:
+            if item not in list_data:
+                missing_fields.append(item)
+    elif "Data.xlsx" in file:
+        path = directory + '/' + file
+        df = pd.read_excel(path)
+        list_data = df.columns.to_list()
+        for item in list_1:
+            if item not in list_data:
+                missing_fields.append(item)
+    elif "Data.xls" in file:
+        path = directory + '/' + file
         df = pd.read_excel(path)
         list_data = df.columns.to_list()
         for item in list_1:
@@ -36,7 +50,7 @@ for file in os.listdir():
 #creating report
 today = dt.datetime.now()
 today_x = str(today).split('.')[0]
-report = directory+'/'+'report.txt'
+report = directory + '/'+'report.txt'
 with open(report,'w') as f:
     f.write('========================================================'+'\n')
     f.write('========================================================'+'\n')
@@ -90,3 +104,7 @@ with open(report,'a') as f:
     f.write('\n')
     f.write('---Script finished---'+'\n')
     f.write(f"(Executed in: {execution_time} sec)")
+
+
+
+

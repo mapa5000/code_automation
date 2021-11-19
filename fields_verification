@@ -23,6 +23,15 @@ for file in os.listdir():
             if item not in list_data:
                 missing_fields.append(item)
 
+    elif ".xls" in file:
+        path = r"../fields_verification/" + file
+        df = pd.read_excel(path)
+        list_data = df.columns.to_list()
+        for item in list_1:
+            if item not in list_data:
+                missing_fields.append(item)
+    else:
+        pass
 
 #creating report
 today = dt.datetime.now()

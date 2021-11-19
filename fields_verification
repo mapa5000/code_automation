@@ -1,15 +1,16 @@
+import datetime as dt
 import pandas as pd
 import os
+
+#star time
+start_time = dt.datetime.now()
 
 os.chdir(r"../fields_verification/")
 print('Folder: ' + os.getcwd())
 
-
+#creating lists
 missing_fields = []
 list_1 = ['Side','AddNum','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']
-
-
-
 
 
 for file in os.listdir():
@@ -21,6 +22,34 @@ for file in os.listdir():
             if item not in list_data:
                 missing_fields.append(item)
 
+
+#creating report
+today = dt.datetime.now()
+today_x = str(today).split('.')[0]
+report = r"../fields_verification/report.txt"
+with open(report,'w') as f:
+    f.write('=================================================='+'\n')
+    f.write('=================================================='+'\n')
+    f.write('=================================================='+'\n')
+    f.write('********************** REPORT ********************'+'\n')
+    f.write('=================================================='+'\n')
+    f.write('=================================================='+'\n')
+    f.write('=================================================='+'\n')
+    f.write('\n')
+    f.write('Developed by: M. Portillo'+'\n')
+    f.write('Company: CenterPoint Energy'+'\n')
+    f.write('Company: GIS/CAD Department'+'\n')
+    f.write(f'Date: {today_x}'+'\n')
+    f.write('\n')
+    f.write('Number of missing fields: ' + str(len(missing_fields)))
+    f.write('\n')
+    f.write('List of Missing Fields: ')
+    f.write(str(missing_fields))
+    f.write('\n')
+    f.write('\n')
+
+    
+#report on console
 print('\n')
 print('***************************************')
 print('***************************************')
@@ -35,4 +64,19 @@ print('List of Missing Fields: ')
 print(missing_fields)
 print('\n')
 print('\n')
+
 print('---script finished---')
+
+
+
+end_time = dt.datetime.now()
+
+#calculating exucution time
+execution_time = end_time - start_time
+
+with open(report,'a') as f:
+    f.write('\n')
+    f.write('\n')
+    f.write('\n')
+    f.write('---Script finished---'+'\n')
+    f.write(f"(Executed in: {execution_time} sec)")

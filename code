@@ -38,14 +38,14 @@ print('...extracting data...')
 
 if os.path.isfile("data.xls"):
     path = "data.xls"
-if os.path.isfile("data.xlsx"):
+elif os.path.isfile("data.xlsx"):
     path = "data.xlsx"
-if os.path.isfile("Data.xls"):
+elif os.path.isfile("Data.xls"):
     path = "Data.xls"
-if os.path.isfile("Data.xlsx"):
+elif os.path.isfile("Data.xlsx"):
     path = "Data.xlsx"
 else:
-    print('data not found')
+    print('...data not found...')
 
 
 #reading df
@@ -67,7 +67,7 @@ dataframe['Mtr_Ser_No'] = dataframe['Mtr_Ser_No'].astype(str).map(lambda x:x.spl
 dataframe['Full_name'] = dataframe['Last_Name']+', '+dataframe['First_Name']
 dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
 df = dataframe[['House','Full_add','Full_name', 'Loc','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']]
-print('... dataframe created...')
+print('...dataframe created...')
 
 #sorting values 1)facet 2)last name
 df.sort_values(by=['FACET_NAME','Full_name'])
@@ -93,7 +93,6 @@ for  dfi in dfs:
     i = 0;
     sh = 1
     df_empty_list=[]
-    #print('Book: ' + str(values[book]))
 
     df_empty = pd.DataFrame({})
     for idx in dfi.index:
@@ -187,31 +186,12 @@ for wb in list_wb:
                 sheet_re_light_template['H' + str(irow + 5 )].value  = ERT_Ser_No_row[irow].value
             sheet_re_light_template['E1']  = sheet['F2'].value
             sheet_re_light_template['I1']  = sheet['G2'].value
-
+            sheet_number = sheet_re_light_template.title[5:]
+            total_number = len(wb_obj.worksheets)
+            numeration = '{} of {}'.format(sheet_number,total_number)
+            sheet_re_light_template['N1'].value = numeration
 
         wb_new.save(newPath)
-
-
-os.chdir(r"../valve_off/")
-print('...creating page index...')
-print('...renaming workbooks...') 
-
-for wb in os.listdir():
-    
-    wb_obj = openpyxl.load_workbook(wb)
-    wb_obj.active
-    wb_obj.properties.tagname
-    for sheet in wb_obj.worksheets:
-        
-        sheet_number = sheet.title[5:]
-        total_number = len(wb_obj.worksheets)
-        numeration = '{} of {}'.format(sheet_number,total_number)
-        sheet['N1'].value = numeration
-        wb_obj.save(wb)
-
-
-
-
 
 
 ##############################################################################################################################################################
@@ -221,7 +201,6 @@ for wb in os.listdir():
 #                                                                                                                                                            #
 #                                                                                                                                                            #
 ##############################################################################################################################################################
-
 
 
 print('...re-light data creation...')
@@ -280,28 +259,16 @@ for wb in list_wb:
                 sheet_re_light_template['H' + str(irow + 5 )].value  = ERT_Ser_No_row[irow].value
             sheet_re_light_template['E1']  = sheet['F2'].value
             sheet_re_light_template['I1']  = sheet['G2'].value
-
+            sheet_number = sheet_re_light_template.title[5:]
+            total_number = len(wb_obj.worksheets)
+            numeration = '{} of {}'.format(sheet_number,total_number)
+            sheet_re_light_template['N1'].value = numeration
 
         wb_new.save(newPath)
 
 
 
-os.chdir(r"../re_light/")
-print('...creating page index...')
-print('...renaming workbooks...') 
-
-for wb in os.listdir():
-    
-    wb_obj = openpyxl.load_workbook(wb)
-    wb_obj.active
-    wb_obj.properties.tagname
-    for sheet in wb_obj.worksheets:
-        
-        sheet_number = sheet.title[5:]
-        total_number = len(wb_obj.worksheets)
-        numeration = '{} of {}'.format(sheet_number,total_number)
-        sheet['N1'].value = numeration
-        wb_obj.save(wb)
+print('...page index created...')
 
 
 

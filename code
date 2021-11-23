@@ -8,17 +8,15 @@
 # Created by: MPortillo 
 # ---------------------------------------------------------------------------
 
+print ("Starting")
+print('...importing modules...')
+from datetime import datetime
+start_time = datetime.now()
 
 import pandas as pd 
-import numpy as np 
 import openpyxl 
-import os
-import datetime as dt
 import shutil
-
-
-start_time = dt.datetime.now()
-print ("Starting")
+import os
 
 curr_dir = os.getcwd()
 os.chdir(curr_dir)
@@ -281,7 +279,7 @@ print('...')
 print('...')
 print('script finished')
 
-end_time = dt.datetime.now()
+end_time = datetime.now()
 execution_time = end_time - start_time
 print('\n')
 print(f"(Executed in: {execution_time} sec)")

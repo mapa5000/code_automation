@@ -13,7 +13,7 @@ print('...importing modules...')
 from datetime import datetime
 start_time = datetime.now()
 
-import pandas as pd 
+import pandas as pd
 import openpyxl 
 import shutil
 import os
@@ -51,6 +51,7 @@ print('...creating dataframe...')
 dataframe = pd.read_excel(path)
 
 
+
 #######################################################################################################
 #                                                                                                     #
 #                                                                                                     #
@@ -60,11 +61,11 @@ dataframe = pd.read_excel(path)
 #######################################################################################################
 
 #creating columns for df
-dataframe['House'] = dataframe['AddNum'].astype(str).map(lambda x:x.split('.')[0])
-dataframe['Mtr_Ser_No'] = dataframe['Mtr_Ser_No'].astype(str).map(lambda x:x.split('.')[0])
-dataframe['Full_name'] = dataframe['Last_Name']+', '+dataframe['First_Name']
-dataframe['Full_add'] = dataframe['StName']+', '+dataframe['StType']
-df = dataframe[['House','Full_add','Full_name', 'Loc','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']]
+dataframe['First_Name'] = dataframe['First_Name']
+dataframe['Mtr_Ser_No'] = dataframe['Mtr_Ser_No']#.astype(str).map(lambda x:x.split('.')[0])
+dataframe['Full_name'] = dataframe['Last_Name']
+dataframe['Full_add'] = dataframe['Match_addr']
+df = dataframe[['First_Name','Full_add','Full_name', 'Loc','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No']]
 print('...dataframe created...')
 
 #sorting values 1)facet 2)last name
@@ -267,6 +268,7 @@ for wb in list_wb:
 
 
 print('...page index created...')
+
 
 
 

@@ -11,7 +11,7 @@ print('Folder: ' + directory)
 
 #creating lists
 missing_fields = []
-list_1 = ['Loc','AddNum','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No','StType','StName','Last_Name','First_Name']
+list_1 = ['Loc','FACET_NAME','City','Mtr_Ser_No','ERT_Ser_No','Match_addr','Last_Name','First_Name']
 
 
 for file in os.listdir():
